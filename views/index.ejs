@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Galéria</title>
+    </head>
+    <body>
+        <h1>Galéria</h1>
+        <%= typeof msg != 'undefined' ? msg : ''%>
+        <form method="POST" action="/upload" enctype="multipart/form-data">
+            <input type="file" name="image">
+            <input type="submit">
+        </form>
+        <dl>
+            <% images.forEach(function(image){ %>
+                <dt>
+                    <img src="<%=image%>" width="500">
+                    <form method="post" action="/delete<%=image%>">
+                        <input type="submit" name="<%=image%>" value="Törlés">
+                    </form>
+                </dt>
+            <% }); %>
+        </dl>
+        
+    </body>
+</html>
