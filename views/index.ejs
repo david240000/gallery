@@ -5,7 +5,6 @@
     </head>
     <body>
         <h1>Galéria</h1>
-        <%= typeof msg != 'undefined' ? msg : ''%>
         <form method="POST" action="/upload" enctype="multipart/form-data">
             <input type="file" name="image">
             <input type="submit">

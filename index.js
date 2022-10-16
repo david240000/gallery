@@ -3,8 +3,10 @@ const app = express();
 const path = require('path');
 const ejs = require('ejs');
 const fs = require('fs');
-const bodyParser = require('body-parser')
 
+app.set('view engine', 'ejs');
+app.use(express.static(__dirname +'/public/images/'));
+app.use(express.urlencoded({ extended: true}));
 const multer = require('multer');
 const storage = multer.diskStorage({
     destination: './public/images/',
@@ -32,15 +34,6 @@ function checkFileType(file, cb){
     }
 }
 
-app.set('view engine', 'ejs');
-app.use(express.static(__dirname +'/public/images/'));
-app.use(express.urlencoded({ extended: true}));
-
-app.get('/', (req, res) => {
-    let images = getImagesFromDir(path.join(__dirname, 'public/images'))
-    res.render('index', {images:images});
-});
-
 function getImagesFromDir(dirPath) {
     let allImages = [];
     let files = fs.readdirSync(dirPath)
@@ -52,26 +45,26 @@ function getImagesFromDir(dirPath) {
 
         if (stat && stat.isDirectory()) {
             getImagesFromDir(fileLocation)
-        } else if (stat && stat.isFile() && ['.jpg', '.png'].indexOf(path.extname(fileLocation)) !== -1) {
+        } else if (stat && stat.isFile() && ['.jpeg','.jpg', '.png','.gif'].indexOf(path.extname(fileLocation)) !== -1) {
             allImages.push(file)
         }
     }
     return allImages
 }
 
+app.get('/', (req, res) => {
+    let images = getImagesFromDir(path.join(__dirname, 'public/images'))
+    res.render('index', {images:images});
+});
+
 app.post("/upload", (req, res) =>{
     upload(req, res, (err) =>{
         if(err){
             res.redirect('/') 
-            //{
-              //  msg: err
-            //});
+           
         }else{
             if(req.file == undefined){
-                res.redirect('/' )
-                //,{
-                  //  msg: 'Error: No File Selected!'
-            //    })
+                res.redirect('/')
             } else {
                     res.redirect('/');
                 }
@@ -92,8 +85,8 @@ app.post("/delete:param", (req, res) =>{
           });
         }
       });
-    res.redirect('/')
+    res.redirect('/');
 })
 
-app.listen(3001);
-console.log("3001 is the port");
+app.listen(3000);
+console.log("3000 is the port");
